@@ -1,0 +1,8 @@
+
+path: c:/Users/ASUS/Desktop/notes/agrobots/YOLO/data
+train: images/train
+test: images/test
+val: images/val
+
+names:
+  0: maize

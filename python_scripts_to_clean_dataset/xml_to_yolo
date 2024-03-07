@@ -1,0 +1,49 @@
+import xml.etree.ElementTree as ET
+import os
+from PIL import Image
+
+# Directory containing your XML files
+xml_dir = 'C:/Users/ASUS/Desktop/notes/agrobots/datasets/final/xml_labels'
+# Directory where you want to save the YOLO format annotations
+yolo_labels_dir = 'C:/Users/ASUS/Desktop/notes/agrobots/datasets/final/yolo_labels'
+# Ensure the output directory exists
+os.makedirs(yolo_labels_dir, exist_ok=True)
+
+def convert_xml_to_yolo(xml_file, img_file, output_file):
+    tree = ET.parse(xml_file)
+    root = tree.getroot()
+    size = root.find('size')
+    width = int(size.find('width').text)
+    height = int(size.find('height').text)
+
+    with open(output_file, 'w') as file:
+        for obj in root.iter('object'):
+            cls = obj.find('name').text
+            if cls != 'maize':
+                continue
+            cls_id = 0  # Since there's only one class
+
+            xmlbox = obj.find('bndbox')
+            b = (float(xmlbox.find('xmin').text), float(xmlbox.find('ymin').text),
+                 float(xmlbox.find('xmax').text), float(xmlbox.find('ymax').text))
+            bb = (b[0]/width, b[1]/height, b[2]/width, b[3]/height)  # Normalizing the bounding box
+
+            # Convert to YOLO format
+            x_center = (bb[0] + bb[2]) / 2
+            y_center = (bb[1] + bb[3]) / 2
+            w = bb[2] - bb[0]
+            h = bb[3] - bb[1]
+
+            file.write(f"{cls_id} {x_center} {y_center} {w} {h}\n")
+
+# Convert all XML files in the directory
+for xml_file in os.listdir(xml_dir):
+    if not xml_file.endswith('.xml'):
+        continue
+    base_name = os.path.splitext(xml_file)[0]
+    img_file = os.path.join(xml_dir, base_name + '.jpg')  # Assuming JPEG images; adjust if using another format
+    output_file = os.path.join(yolo_labels_dir, base_name + '.txt')
+
+    convert_xml_to_yolo(os.path.join(xml_dir, xml_file), img_file, output_file)
+
+print("Conversion completed.")
