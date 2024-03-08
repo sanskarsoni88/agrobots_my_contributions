@@ -7,4 +7,4 @@ After finding annotated datasets for maize plant from the internet, several perp
 ## Models
 Initially, to get a baseline performance, a YOlOv8 model was trained to give an mAP50 score of 0.63. Here are the inferences made by the model for some of the test images:
 ![Alt text](/YOLO/runs/detect/train2/val_batch0_labels.jpg)
-There are lots of overlapping predictions, non max suppression needs to be strengthened to reduce redundancy. This model was also only trained for 1 epoch on my local machine. Currently I am training Single Shot Detection (SSD) model on a hyper-computing cluster (HPC) to speed up the process. After this, I will try a Masked R-CNN model and compare the accuracy and latency of the models.
+There are some overlapping predictions, non max suppression needs to be strengthened to reduce redundancy. This model was also only trained for 1 epoch on my local machine. It has many false negatives. Currently I am training Single Shot Detection (SSD) model on a hyper-computing cluster (HPC) to speed up the process. After this, I will try a Masked R-CNN model and compare the accuracy and latency of the models.
